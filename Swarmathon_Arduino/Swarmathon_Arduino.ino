@@ -115,12 +115,13 @@ void loop() {
 void parse() {
   if (rxBuffer == "m") {
     turning = false;
-    int speed = Serial.parseInt();
-    if (speed >= 0) {
-      move.forward(speed, speed);
+    int leftSpeed = Serial.parseInt();
+    int rightSpeed = Serial.parseInt();
+    if (leftSpeed >= 0) {
+      move.forward(leftSpeed, rightSpeed);
     }
     else {
-      move.backward(abs(speed), abs(speed));
+      move.backward(abs(leftSpeed), abs(rightSpeed));
     }
   }
   else if (rxBuffer == "t") {
