@@ -39,6 +39,7 @@ int cpr = 8400; //"cycles per revolution" -- number of encoder increments per on
 //Serial (USB <--> Intel NUC)
 String rxBuffer;
 String txBuffer;
+String magBuffer;
 
 //Ultrasound (Ping))))
 byte leftSignal = 4;
@@ -133,6 +134,22 @@ void parse() {
   else if (rxBuffer == "d") {
     update();
     Serial.println(txBuffer);
+  }
+  //if receive a c from computer, go to calibration function
+  // in calibration function, spin around for 20 second
+  // getting magnetic reading the whole time
+  // changed magnetometer_accelerometer.m_min and m_max based on min max during reading
+  else if (rxBuffer == "c") {
+	move.rotateLeft(100);
+	delay(20000);
+	move.stop();
+	magBuffer = String(magnetometer_accelerometer.m_min.x) + "," + 
+				String(magnetometer_accelerometer.m_min.y) + "," + 
+				String(magnetometer_accelerometer.m_min.z) + "," + 
+				String(magnetometer_accelerometer.m_max.x) + "," + 
+				String(magnetometer_accelerometer.m_max.y) + "," + 
+				String(magnetometer_accelerometer.m_max.z);
+	Serial.println(magBuffer);
   }
 }
 
