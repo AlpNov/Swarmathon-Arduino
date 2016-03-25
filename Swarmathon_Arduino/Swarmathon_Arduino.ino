@@ -140,16 +140,26 @@ void parse() {
   // getting magnetic reading the whole time
   // changed magnetometer_accelerometer.m_min and m_max based on min max during reading
   else if (rxBuffer == "c") {
+  	LSM303::vector<int16_t> mag;
 	move.rotateLeft(100);
-	delay(20000);
+	magnetometer_accelerometer.m_min = (LSM303::vector<int16_t>){ 32767, 32767, -2688};
+	magnetometer_accelerometer.m_max = (LSM303::vector<int16_t>){ -32767, -32767, +1549};
+	for ( int i = 0; i < 5000/100; i++ ) {
+  		magnetometer_accelerometer.read();
+  		mag = magnetometer_accelerometer.m;
+		if ( mag.x < magnetometer_accelerometer.m_min.x)
+			magnetometer_accelerometer.m_min.x = mag.x;
+		if ( mag.x > magnetometer_accelerometer.m_max.x)
+			magnetometer_accelerometer.m_max.x = mag.x;
+
+		if ( mag.y < magnetometer_accelerometer.m_min.y)
+			magnetometer_accelerometer.m_min.y = mag.y;
+		if ( mag.y > magnetometer_accelerometer.m_max.y)
+			magnetometer_accelerometer.m_max.y = mag.y;
+
+		delay(100);
+	}
 	move.stop();
-	magBuffer = String(magnetometer_accelerometer.m_min.x) + "," + 
-				String(magnetometer_accelerometer.m_min.y) + "," + 
-				String(magnetometer_accelerometer.m_min.z) + "," + 
-				String(magnetometer_accelerometer.m_max.x) + "," + 
-				String(magnetometer_accelerometer.m_max.y) + "," + 
-				String(magnetometer_accelerometer.m_max.z);
-	Serial.println(magBuffer);
   }
 }
 
